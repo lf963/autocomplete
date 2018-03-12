@@ -126,3 +126,22 @@ $ hadoop jar ngram.jar Driver /input /output 2 3 4
 ```
 
 If it runs successfully, we can see information is written into database.
+
+## Show on web
+
+Modify MySQL connection parameter in web/ajax_refresh.php
+Set your own password
+
+```
+define ('DBUSER', 'root');
+define ('DBPASS','');
+define ('DBNAME','test');
+
+function connect() {
+    return new PDO('mysql:host=localhost;dbname=test', 'root', 'password', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+}
+```
+
+```
+http://ip address/web/
+```
