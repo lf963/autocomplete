@@ -10,18 +10,6 @@ import java.util.*;
 
 public class LanguageModel {
 	public static class Map extends Mapper<LongWritable, Text, Text, Text> {
-		//if the number of phrases is less than threshold
-		//we ignore it
-		int threshold;
-
-		@Override
-		public void setup(Context context) {
-			//get the threashold parameter from the configuration
-			Configuration config = context.getConfiguration();
-			threshold = config.getInt("threshold",20);
-		}
-
-		
 		@Override
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			if((value == null) || (value.toString().trim()).length() == 0) {
@@ -40,9 +28,6 @@ public class LanguageModel {
 			String[] words = wordsPlusCount[0].split("\\s+");
 			int count = Integer.valueOf(wordsPlusCount[1]);
 
-			//filter the n-gram lower than threashold
-			if(count < threshold)
-				return;
 			//this is --> cool = 20
 			String outputKey = "";
 			String outputValue = "";

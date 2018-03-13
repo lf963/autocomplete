@@ -10,7 +10,6 @@ import java.io.IOException;
 
 public class NGramLibraryBuilder {
 	public static class NGramMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
-
 		int noGram;
 		@Override
 		public void setup(Context context) {
@@ -28,7 +27,6 @@ public class NGramLibraryBuilder {
 			line = line.trim().toLowerCase();
 			//preserve ' because I'm, don't contains '
 			line = line.replaceAll("[^a-z']"," ");
-			System.out.println(line);
 			String[] words = line.split("\\s+");
 
 			//if the length of this sentence is less than two
@@ -47,6 +45,18 @@ public class NGramLibraryBuilder {
 	}
 
 	public static class NGramReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+		//if the number of phrases is less than threshold
+		//we ignore it
+		int threshold;
+
+		@Override
+		public void setup(Context context) {
+			//setup threshold from command line
+			Configuration confg = context.getConfiguration();
+			//if parameter in command line is missing, default value is 20
+			threshold = confg.getInt("threshold",20);
+		}
+
 		// reduce method
 		@Override
 		public void reduce(Text key, Iterable<IntWritable> values, Context context)
@@ -55,7 +65,8 @@ public class NGramLibraryBuilder {
 			int sum = 0;
 			for(IntWritable value : values)
 				sum += value.get();
-			context.write(key, new IntWritable(sum));
+			if(sum >= threshold)
+				context.write(key, new IntWritable(sum));
 		}
 	}
 

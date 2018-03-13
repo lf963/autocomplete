@@ -30,7 +30,7 @@ public class Driver {
 		//In the future, I will figure out how to set delimiter by regular expression
 		conf1.set("textinputformat.record.delimiter", ".");
 		conf1.set("noGram", numberOfNGram);
-		
+		conf1.set("threshold", threshold);
 		Job job1 = Job.getInstance(conf1);
 		job1.setJobName("NGram");
 		job1.setJarByClass(Driver.class);
@@ -52,15 +52,15 @@ public class Driver {
 		
 		//2nd job
 		Configuration conf2 = new Configuration();
-		conf2.set("threshold", threshold);
+		//conf2.set("threshold", threshold);
 		conf2.set("n", numberOfFollowingWords);
 
 		//Use dbConfiguration to configure all the jdbcDriver, db user, db password, database
 		DBConfiguration.configureDB(conf2, 
 				"com.mysql.jdbc.Driver",
-				"jdbc:mysql://ip address:port/database name",
+				"jdbc:mysql://192.168.237.128:3306/test",
 				"root",
-				"password");
+				"czczcz123");
 		
 		Job job2 = Job.getInstance(conf2);
 		job2.setJobName("Model");
@@ -72,7 +72,7 @@ public class Driver {
 		  2. use this "addArchiveToClassPath" method to define the dependency path on hdfs
 		 */
 		//mysql-connector-java-5.1.39-bin.jar: connect to MySQL
-		job2.addArchiveToClassPath(new Path("connector's path"));
+		job2.addArchiveToClassPath(new Path("/mysql/mysql-connector-java-5.1.39-bin.jar"));
 
 		//Why do we add setMapOutputKeyClass() and setMapOutputValueClass()?
 		//Because mapper's output key and value are inconsistent with reducer's output key and value
